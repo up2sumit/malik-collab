@@ -1,0 +1,372 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────
+   Design tokens
+   Contrast notes (WCAG 2.2 AA, measured):
+   - terracotta #B85D3C on cream = 3.99:1 → large display text only
+   - terracotta-deep #A64E30 is for fills (buttons, the stories panel: paper
+     on it = 5.3:1). Small text on light backgrounds uses clay #8F402A
+     (6.3:1 on cream, 5.6:1 on sand)
+   - muted #5B655D is used on cream/paper only (≥ 5.5:1)
+   - sage and amber are decorative, large display text, or paired with ink text
+   - amber-light #F2B98A is the small-text accent on forest (≥ 6:1)
+   ─────────────────────────────────────────────── */
+@theme {
+  --color-cream: #f7f1e8;
+  --color-sand: #ede3d5;
+  --color-forest: #2d493c;
+  --color-forest-deep: #223a2f;
+  --color-sage: #81917d;
+  --color-terracotta: #b85d3c;
+  --color-terracotta-deep: #a64e30;
+  --color-clay: #8f402a;
+  --color-amber: #d88750;
+  --color-amber-light: #f2b98a;
+  --color-ink: #232b27;
+  --color-muted: #5b655d;
+  --color-paper: #fffcf7;
+  --color-line: #d9ccbd;
+
+  --font-heading: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
+
+  --ease-soft: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --header-h: 4.75rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta-deep);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-paper);
+  }
+  ::selection {
+    background: var(--color-amber);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+/* ── Type scale (fluid) ── */
+.t-display {
+  font-size: clamp(2.5rem, 1.5rem + 4.6vw, 5rem);
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.t-hero {
+  font-size: clamp(2.5rem, 1.35rem + 3.9vw, 4.5rem);
+  line-height: 1.03;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.t-h2 {
+  font-size: clamp(1.875rem, 1.25rem + 2.6vw, 3.25rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.t-h3 {
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+  line-height: 1.2;
+  font-weight: 700;
+}
+.t-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  line-height: 1.6;
+}
+.t-eyebrow {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.serif-em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* ── Layout ── */
+.wrap {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+/* Lets a horizontal scroller run edge to edge on small screens. Uses the exact
+   gutter value of .wrap so it can never push the page wider than the viewport. */
+.bleed {
+  margin-inline: calc(-1 * clamp(1.25rem, 4vw, 3rem));
+  padding-inline: clamp(1.25rem, 4vw, 3rem);
+  /* Without this, scroll-snap aligns the first item to the scrollport edge and ignores the padding. */
+  scroll-padding-inline: clamp(1.25rem, 4vw, 3rem);
+}
+.section {
+  padding-block: clamp(4rem, 3rem + 5vw, 8rem);
+}
+
+/* ── Shape language: deliberately varied, never one radius ── */
+.shape-leaf {
+  border-radius: 2.75rem 0.5rem 2.75rem 0.5rem;
+}
+.shape-leaf-alt {
+  border-radius: 0.5rem 2.75rem 0.5rem 2.75rem;
+}
+.shape-arch {
+  border-radius: 999px 999px 0.75rem 0.75rem;
+}
+.shape-pebble {
+  border-radius: 62% 38% 54% 46% / 48% 56% 44% 52%;
+}
+.shape-soft {
+  border-radius: 1.25rem 1.25rem 0.5rem 1.25rem;
+}
+
+/* ── Buttons ── */
+.btn {
+  --btn-bg: var(--color-terracotta-deep);
+  --btn-fg: var(--color-paper);
+  --btn-bd: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--btn-bd);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--ease-soft),
+    color 200ms var(--ease-soft),
+    border-color 200ms var(--ease-soft),
+    transform 200ms var(--ease-soft);
+}
+.btn:hover {
+  --btn-bg: #8f402a;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn .arrow {
+  transition: transform 220ms var(--ease-soft);
+}
+.btn:hover .arrow {
+  transform: translateX(3px);
+}
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-outline {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-ink);
+  --btn-bd: var(--color-ink);
+}
+.btn-outline:hover {
+  --btn-bg: var(--color-ink);
+  --btn-fg: var(--color-paper);
+}
+.btn-light {
+  --btn-bg: var(--color-paper);
+  --btn-fg: var(--color-forest);
+}
+.btn-light:hover {
+  --btn-bg: var(--color-sand);
+}
+.btn-outline-light {
+  --btn-bg: transparent;
+  --btn-fg: var(--color-paper);
+  --btn-bd: rgb(255 252 247 / 0.7);
+}
+.btn-outline-light:hover {
+  --btn-bg: var(--color-paper);
+  --btn-fg: var(--color-forest);
+}
+.btn-sm {
+  min-height: 2.5rem;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+}
+
+/* Text link with an underline that draws in */
+.link-u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 280ms var(--ease-soft);
+  text-decoration: none;
+}
+.link-u:hover,
+.link-u[aria-current="page"] {
+  background-size: 100% 1.5px;
+}
+
+/* ── Waves: organic section separators ── */
+.wave-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 1px);
+  height: clamp(2.25rem, 6vw, 5.5rem);
+  width: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── Photo grain (subtle film texture) ── */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ── Motion ──
+   Content is visible by default. It is only hidden when scripting is
+   available AND the visitor has not asked for reduced motion. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal:not(.in) {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  .reveal {
+    transition:
+      opacity 600ms var(--ease-soft) var(--reveal-delay, 0ms),
+      transform 600ms var(--ease-soft) var(--reveal-delay, 0ms);
+  }
+}
+
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.6rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes mask-in {
+  from {
+    opacity: 0;
+    clip-path: inset(8% 8% 8% 8% round 2rem);
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 0);
+    transform: scale(1);
+  }
+}
+.line {
+  display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The headline is the Largest Contentful Paint element, so it fades and lifts
+     a short distance instead of sliding out of a clipped mask (clipped text is
+     not counted as painted until it moves into view). */
+  .line > span {
+    display: block;
+    animation: line-in 450ms var(--ease-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .fade-up {
+    animation: fade-up 650ms var(--ease-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .mask-in {
+    animation: mask-in 900ms var(--ease-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utility: hide scrollbars on horizontal scrollers without removing scroll */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Native <dialog> backdrop */
+dialog::backdrop {
+  background: rgb(35 43 39 / 0.78);
+}
+
+/* Screen-reader only (Tailwind's sr-only is also available) */
+.honeypot {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+}
